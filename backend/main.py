@@ -4,6 +4,15 @@ FastAPI + yfinance
 """
 from pathlib import Path
 
+# ── 加载 .env 配置文件 ──────────────────────────────
+try:
+    from dotenv import load_dotenv
+    _env_path = Path(__file__).resolve().parent / ".env"
+    if _env_path.exists():
+        load_dotenv(_env_path)
+except ImportError:
+    pass
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
