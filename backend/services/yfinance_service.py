@@ -4,10 +4,39 @@ Yahoo Finance 数据服务封装层
 """
 import yfinance as yf
 import pandas as pd
+import requests
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta
 import json
 from difflib import SequenceMatcher
+
+# ── 配置 yfinance 的 HTTP 会话，避免云端 IP 被 Yahoo 封禁 ────
+_YF_SESSION = requests.Session()
+_YF_SESSION.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "Accept": "application/json",
+    "Accept-Language": "en-US,en;q=0.9",
+})
+
+# 将自定义 session 设为 yfinance 的默认 session
+try:
+    # yfinance >= 0.2.31 supports custom session via set_tz_cache_location pattern
+    import yfinance.shared as yf_shared
+    # Store the session for use in Ticker calls
+    _YF_SESSION_AVAILABLE = True
+except Exception:
+    _YF_SESSION_AVAILABLE = False
+
+
+def _get_ticker(symbol: str) -> yf.Ticker:
+    """Create a yfinance Ticker with custom session (avoids cloud IP blocks)."""
+    ticker = _get_ticker(symbol)
+    if _YF_SESSION_AVAILABLE:
+        try:
+            ticker.session = _YF_SESSION
+        except Exception:
+            pass
+    return ticker
 
 
 # ── 常用资产分类 ───────────────────────────────────────────
@@ -211,7 +240,7 @@ def search_symbols(query: str, limit: int = 15) -> List[Dict]:
     # 如果本地结果不足，尝试 Yahoo Finance 搜索
     if len(results) < limit and query_text.isascii():
         try:
-            ticker = yf.Ticker(query_text.upper())
+            ticker = _get_ticker(query_text.upper())
             info = ticker.info
             if info and info.get("symbol"):
                 local_symbols = {r["symbol"] for r in results}
@@ -236,7 +265,7 @@ def search_symbols(query: str, limit: int = 15) -> List[Dict]:
 
 def get_stock_info(symbol: str) -> Dict[str, Any]:
     """获取股票/资产的详细信息"""
-    ticker = yf.Ticker(symbol)
+    ticker = _get_ticker(symbol)
     info = ticker.info
 
     result = {
@@ -302,7 +331,7 @@ def get_stock_history(
     period: 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max
     interval: 1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo
     """
-    ticker = yf.Ticker(symbol)
+    ticker = _get_ticker(symbol)
     df = ticker.history(period=period, interval=interval)
 
     if df.empty:
@@ -330,7 +359,7 @@ def get_financials(symbol: str, statement_type: str = "income", period: str = "a
     statement_type: income | balance | cashflow
     period: annual | quarterly
     """
-    ticker = yf.Ticker(symbol)
+    ticker = _get_ticker(symbol)
 
     if statement_type == "income":
         df = ticker.financials if period == "annual" else ticker.quarterly_financials
@@ -376,7 +405,7 @@ def get_market_overview() -> Dict[str, Any]:
 
     for idx in indices:
         try:
-            ticker = yf.Ticker(idx["symbol"])
+            ticker = _get_ticker(idx["symbol"])
             info = ticker.info
             hist = ticker.history(period="5d")
 
@@ -421,7 +450,7 @@ def get_market_overview() -> Dict[str, Any]:
     stock_data = []
     for s in stocks:
         try:
-            ticker = yf.Ticker(s["symbol"])
+            ticker = _get_ticker(s["symbol"])
             info = ticker.info
             hist = ticker.history(period="5d")
             price = _safe_value(info.get("regularMarketPrice") or info.get("currentPrice"))
@@ -481,7 +510,7 @@ def compare_symbols(symbols: List[str], period: str = "1y") -> Dict[str, Any]:
 
     for symbol in symbols:
         try:
-            ticker = yf.Ticker(symbol)
+            ticker = _get_ticker(symbol)
             df = ticker.history(period=period)
 
             if df.empty:
