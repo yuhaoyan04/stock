@@ -1,0 +1,72 @@
+// ── 产品主题变量：组件样式通过 CSS variables 支持一键切换 ─────
+:root {
+  --app-bg-primary: #080b10;
+  --app-bg-secondary: #101620;
+  --app-bg-card: #151c27;
+  --app-bg-hover: #1d2734;
+  --app-bg-input: #0c121a;
+  --app-border-color: #263142;
+  --app-border-light: #364255;
+  --app-text-primary: #f3f6fb;
+  --app-text-secondary: #aab5c4;
+  --app-text-muted: #687586;
+  --app-header-bg: rgba(9, 13, 19, 0.88);
+}
+
+html[data-theme='light'] {
+  --app-bg-primary: #f4f7fb;
+  --app-bg-secondary: #eaf0f7;
+  --app-bg-card: #ffffff;
+  --app-bg-hover: #e3ebf5;
+  --app-bg-input: #ffffff;
+  --app-border-color: #d6e0ec;
+  --app-border-light: #c1cedd;
+  --app-text-primary: #172235;
+  --app-text-secondary: #526278;
+  --app-text-muted: #7b8ba1;
+  --app-header-bg: rgba(255, 255, 255, 0.9);
+}
+
+$bg-primary: var(--app-bg-primary);
+$bg-secondary: var(--app-bg-secondary);
+$bg-card: var(--app-bg-card);
+$bg-hover: var(--app-bg-hover);
+$bg-input: var(--app-bg-input);
+$border-color: var(--app-border-color);
+$border-light: var(--app-border-light);
+$text-primary: var(--app-text-primary);
+$text-secondary: var(--app-text-secondary);
+$text-muted: var(--app-text-muted);
+
+$color-up: #12b981;       // 涨 — 绿色
+$color-down: #f43f5e;      // 跌 — 红色
+$color-up-bg: rgba(0, 200, 83, 0.12);
+$color-down-bg: rgba(255, 23, 68, 0.12);
+
+$color-accent: #4f8cff;
+$color-accent-light: #8ab4ff;
+$color-warning: #f6b73c;
+$color-info: #38bdf8;
+$color-violet: #a78bfa;
+$color-panel: rgba(21, 28, 39, 0.88);
+
+// ── 布局 ───────────────────────────────────────
+$header-height: 68px;
+$sidebar-width: 248px;
+$sidebar-collapsed: 64px;
+
+// ── 圆角 ───────────────────────────────────────
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+
+// ── 阴影 ───────────────────────────────────────
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+// ── 过渡 ───────────────────────────────────────
+$transition-fast: 0.15s ease;
+$transition-normal: 0.25s ease;
+$transition-slow: 0.35s ease;
