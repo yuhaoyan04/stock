@@ -30,12 +30,11 @@ except Exception:
 
 def _get_ticker(symbol: str) -> yf.Ticker:
     """Create a yfinance Ticker with custom session (avoids cloud IP blocks)."""
-    ticker = _get_ticker(symbol)
-    if _YF_SESSION_AVAILABLE:
-        try:
-            ticker.session = _YF_SESSION
-        except Exception:
-            pass
+    ticker = yf.Ticker(symbol)
+    try:
+        ticker.session = _YF_SESSION
+    except Exception:
+        pass
     return ticker
 
 
