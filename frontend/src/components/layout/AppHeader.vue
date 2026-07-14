@@ -1,6 +1,10 @@
 ﻿<template>
   <header class="app-header">
     <div class="header-left">
+      <!-- 移动端汉堡菜单 -->
+      <button class="hamburger" @click="$emit('toggleSidebar')">
+        <el-icon :size="22"><Expand /></el-icon>
+      </button>
       <div class="logo" @click="$router.push('/')">
         <svg class="logo-icon" viewBox="0 0 36 36" width="36" height="36">
           <rect width="36" height="36" rx="8" fill="#111827"/>
@@ -49,6 +53,8 @@ import { useStockStore } from '@/store/stockStore'
 import { formatDateTime } from '@/utils/formatters'
 import { useTheme } from '@/utils/theme'
 
+defineEmits(['toggleSidebar'])
+
 const router = useRouter()
 const route = useRoute()
 const store = useStockStore()
@@ -77,6 +83,8 @@ function goToStock(symbol) {
   z-index: 100;
 }
 .header-left { display: flex; align-items: center; min-width: 250px; }
+.hamburger { display: none; background: none; border: none; color: $text-secondary; cursor: pointer; padding: 6px; margin-right: 6px; border-radius: $radius-sm; }
+.hamburger:hover { color: $text-primary; background: $bg-hover; }
 .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
 .logo-icon { flex-shrink: 0; border: 1px solid rgba(138, 180, 255, 0.28); border-radius: 9px; box-shadow: 0 10px 28px rgba(79, 140, 255, 0.18); }
 .brand-copy { display: flex; flex-direction: column; line-height: 1.1; }
@@ -118,5 +126,6 @@ function goToStock(symbol) {
 .theme-toggle { border-color: rgba(109, 125, 151, 0.22); background: $bg-card; color: $text-secondary; }
 .theme-toggle:hover { color: $color-accent; border-color: $color-accent; }
 @media (max-width: 1160px) { .source-status, .session-chip { display: none; } .header-right { min-width: 140px; } }
-@media (max-width: 820px) { .header-left { min-width: 48px; } .brand-copy { display: none; } .header-center { margin: 0 12px; } .nav-btns { display: none; } }
+@media (max-width: 820px) { .header-left { min-width: auto; } .brand-copy { display: none; } .header-center { margin: 0 12px; } .nav-btns { display: none; } }
+@media (max-width: 768px) { .hamburger { display: flex; align-items: center; justify-content: center; } .header-left { min-width: auto; } .app-header { padding: 0 12px; } }
 </style>

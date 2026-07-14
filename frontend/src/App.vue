@@ -1,8 +1,10 @@
 <template>
   <div class="app-container" :class="`theme-${theme}`">
-    <AppHeader />
+    <AppHeader @toggle-sidebar="sidebarOpen = !sidebarOpen" />
     <div class="app-body">
-      <AppSidebar />
+      <!-- 移动端遮罩 -->
+      <div v-if="sidebarOpen" class="mobile-overlay" @click="sidebarOpen = false"></div>
+      <AppSidebar :class="{ 'mobile-open': sidebarOpen }" @navigate="sidebarOpen = false" />
       <main class="main-content">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
@@ -15,12 +17,14 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import { useTheme } from '@/utils/theme'
 
 const { theme, applyTheme } = useTheme()
+const sidebarOpen = ref(false)
+
 onMounted(() => applyTheme(theme.value))
 </script>
 
@@ -44,6 +48,22 @@ onMounted(() => applyTheme(theme.value))
   display: flex;
   overflow: hidden;
   min-height: 0;
+  position: relative;
+}
+
+/* ── 移动端遮罩 ──────────────────────────────── */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 150;
+}
+
+@media (max-width: 768px) {
+  .mobile-overlay {
+    display: block;
+  }
 }
 
 .main-content {
@@ -66,9 +86,19 @@ onMounted(() => applyTheme(theme.value))
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.5), transparent 70%);
 }
 
+@media (max-width: 768px) {
+  .main-content::before { inset: $header-height 0 0 0; }
+}
+
 @media (max-width: 900px) {
   .main-content {
     padding: 18px 16px 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 14px 12px 24px;
   }
 }
 </style>
