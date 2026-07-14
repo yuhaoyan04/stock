@@ -6,9 +6,13 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5173",
     "build": "vite build",
+    "build:apk": "vite build --mode capacitor && npx cap sync",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
     "@element-plus/icons-vue": "^2.3.2",
     "axios": "^1.18.1",
     "echarts": "^6.1.0",

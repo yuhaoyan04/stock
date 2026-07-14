@@ -1,0 +1,9 @@
+{
+  "appId": "com.stock.research",
+  "appName": "美股研究",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}
